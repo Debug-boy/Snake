@@ -29,6 +29,7 @@ public:
 	unsigned int getColor() const;
 	unsigned int getDirection() const;
 	Vector2 getHeadPos() const;
+	Vector2 getRandPos();
 
 	bool checkPosIsNode(Vector2 _position);
 	bool checkNextMoveErro(Vector2& outNextLocation);

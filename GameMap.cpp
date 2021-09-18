@@ -6,6 +6,12 @@ GameMap::GameMap(unsigned int _color,unsigned int _sideColor, unsigned int _size
 	this->sideColor = _sideColor;
 	this->size = _size;
 	this->chunk_size = _chunk_size;
+	this->food = nullptr;
+	this->renewfood = false;
+}
+
+GameMap::~GameMap() {
+	delete this->food;
 }
 
 void GameMap::draw_side(){
@@ -25,6 +31,12 @@ void GameMap::draw_background(){
 		}
 	}
 
+}
+
+void GameMap::draw_food(){
+	if (this->checkFoodErro() == false) {
+		this->setChunkColor(this->food->getPosition(), this->food->getSideColor(), CYAN);
+	}
 }
 
 unsigned int GameMap::getSize(){
@@ -54,8 +66,29 @@ void GameMap::setChunkColor(Vector2 target_pos, COLORREF color_side, COLORREF co
 
 }
 
-void GameMap::setFoodChunk(COLORREF foodColor){
-	this->food.setFillColor(foodColor);
+void GameMap::setFoodPos(Vector2 _position){
+	if (!this->food) {
+		this->food = new Chunk(Vector2(-1, -1), this->chunk_size);
+		this->food->setFillColor(CYAN);
+		this->food->setPosition(_position);
+	}
+	if(this->renewfood)
+		this->food->setPosition(_position);
+}
+
+void GameMap::setFoodRenew(bool is){
+	this->renewfood = is;
+}
+
+Vector2 GameMap::getFoodPos() {
+	if (this->food) {
+		return this->food->getPosition();
+	}
+	return Vector2(-1, -1);
+}
+
+bool GameMap::checkFoodErro(){
+	return !this->food;
 }
 
 bool GameMap::checkOutSide(Vector2 checkLocation){
@@ -72,7 +105,7 @@ bool GameMap::checkOutSide(Vector2 checkLocation){
 }
 
 bool GameMap::isFoodChunk(Vector2 location){
-	return (this->food.getPosition() == location);
+	return (this->food->getPosition() == location);
 }
 
 unsigned int GameMap::getChunkSize(){

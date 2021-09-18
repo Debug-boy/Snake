@@ -61,6 +61,18 @@ Vector2 Snake::getHeadPos() const{
 	return (*this->list.cbegin()).getPosition();
 }
 
+Vector2 Snake::getRandPos(){
+	Vector2 location = this->controllMap->getRandPos();
+	
+	//判断从GameMap类里面的取出的随机Chunk坐标是否为蛇身体的节点，
+	//因为这个方法会来被用作食物之类的，所以要保证百分之百不能为蛇的身体
+	while (this->checkPosIsNode(location)) {
+		location = this->controllMap->getRandPos();
+	}
+
+	return location;
+}
+
 
 bool Snake::checkPosIsNode(Vector2 _position){
 	for (auto iter_chunk = this->list.begin(); iter_chunk != this->list.end(); iter_chunk++) {

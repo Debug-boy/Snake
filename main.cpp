@@ -11,6 +11,7 @@ int main(int argc, char* argv[]) {
 
 	while (true) {
 		gameMap.draw();
+		gameMap.setFoodPos(snake.getRandPos());
 		snake.controllerMove();
 		snake.render();
 		SleepEx(500, false);
