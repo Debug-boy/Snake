@@ -8,6 +8,7 @@ GameMap::GameMap(unsigned int _color,unsigned int _sideColor, unsigned int _size
 	this->chunk_size = _chunk_size;
 	this->food = nullptr;
 	this->renewfood = false;
+	this->setFoodPos(this->getRandPos());
 }
 
 GameMap::~GameMap() {
@@ -26,7 +27,7 @@ void GameMap::draw_background(){
 
 	for (auto x = 0U; x < this->size; x += this->chunk_size) {
 		for (auto y = 0U; y < this->size; y += this->chunk_size) {
-			Chunk chunk(Vector2(x, y), this->chunk_size, BLACK, GREEN);
+			Chunk chunk(Vector2(x, y), this->chunk_size, this->backgroundColor, this->sideColor);
 			chunk.draw();
 		}
 	}
@@ -43,9 +44,13 @@ unsigned int GameMap::getSize(){
 	return this->size;
 }
 
+unsigned int GameMap::getGameSize(){
+	return this->size / this->chunk_size;
+}
+
 Vector2 GameMap::getRandPos(){
 	srand((unsigned int)time(NULL));
-	auto c_max = this->size / this->chunk_size;
+	auto c_max = this->getGameSize();
 	auto x = rand() % c_max;
 	auto y = rand() % c_max;
 	return Vector2(x, y);
@@ -68,23 +73,28 @@ void GameMap::setChunkColor(Vector2 target_pos, COLORREF color_side, COLORREF co
 
 void GameMap::setFoodPos(Vector2 _position){
 	if (!this->food) {
-		this->food = new Chunk(Vector2(-1, -1), this->chunk_size);
-		this->food->setFillColor(CYAN);
-		this->food->setPosition(_position);
+		this->food = new Chunk(_position, this->chunk_size,CYAN,this->sideColor);
 	}
-	if(this->renewfood)
+	if (this->renewfood) {
 		this->food->setPosition(_position);
+		this->setFoodRenew(false);//当食物的坐标刷新后，就立即把刷新状态改为假=不刷新
+	}
 }
 
 void GameMap::setFoodRenew(bool is){
 	this->renewfood = is;
 }
 
+
 Vector2 GameMap::getFoodPos() {
 	if (this->food) {
 		return this->food->getPosition();
 	}
 	return Vector2(-1, -1);
+}
+
+bool GameMap::getFoodRenew(){
+	return this->renewfood;
 }
 
 bool GameMap::checkFoodErro(){

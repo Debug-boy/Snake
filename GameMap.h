@@ -25,6 +25,7 @@ public:
 	void draw_food();
 
 	unsigned int getSize();
+	unsigned int getGameSize();
 	unsigned int getChunkSize();
 	Vector2 getRandPos();
 
@@ -34,6 +35,7 @@ public:
 	void setFoodRenew(bool is);
 
 	Vector2 getFoodPos();
+	bool getFoodRenew();
 
 	bool checkFoodErro();
 	bool checkOutSide(Vector2 checkLocation);

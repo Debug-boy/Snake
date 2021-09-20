@@ -35,13 +35,15 @@ public:
 	bool checkNextMoveErro(Vector2& outNextLocation);
 	bool checkMapErro();
 	
-	void updata();
+	void updata(Vector2 nextPos);
 
-	void controllerMove();
+	void controllerMove(unsigned short _direction);
+	void autoMove();
 	void addChunk(Chunk _chunk, bool isLast = true);
+	void swap(Chunk& a, Chunk& b);
 
 public:
-	void render();
+	void draw();
 
 
 };

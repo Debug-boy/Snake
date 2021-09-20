@@ -34,7 +34,7 @@ public:
 	}
 
 	bool operator ==(Vector2 vec) const {
-		return (this->x == vec.x && this->y == this->y);
+		return (this->x == vec.x && this->y == vec.y);
 	}
 
 	void set(int _x, int _y) {
