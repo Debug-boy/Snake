@@ -31,10 +31,7 @@ void Game::begin(){
 			gameMap.setFoodColor(gameMap.getRandColor());
 		}
 		gameMap.draw();
-
-		mu.lock();
 		snake.draw();
-		mu.unlock();
 
 		FlushBatchDraw();
 

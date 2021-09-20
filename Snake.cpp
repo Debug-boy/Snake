@@ -243,11 +243,20 @@ void Snake::draw(){
 		return;
 	}
 
-	for (auto iter_chunk = this->list.begin(); iter_chunk != this->list.end(); iter_chunk++) {
-		
-		auto &chunk = (*iter_chunk);
-		this->controllMap->setChunkColor(chunk.getPosition(), chunk.getSideColor(), chunk.getFillColor());
+	//for (auto iter_chunk = this->list.begin(); iter_chunk != this->list.end(); iter_chunk++) {
+	//	
+	//	auto &chunk = (*iter_chunk);
+	//	this->controllMap->setChunkColor(chunk.getPosition(), chunk.getSideColor(), chunk.getFillColor());
 
+	//}
+
+	//因为渲染蛇和监视键盘的线程分开了，所以比较麻烦
+	for (auto i = 0U; i < this->list.size(); i++) {
+		if (i > this->list.size() - 1) {
+			break;
+		}
+		auto& chunk = this->list[i];
+		this->controllMap->setChunkColor(chunk.getPosition(), chunk.getSideColor(), chunk.getFillColor());
 	}
 
 }
