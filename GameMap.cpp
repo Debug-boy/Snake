@@ -9,6 +9,7 @@ GameMap::GameMap(unsigned int _color,unsigned int _sideColor, unsigned int _size
 	this->food = nullptr;
 	this->renewfood = false;
 	this->setFoodPos(this->getRandPos());
+	this->setFoodColor(this->getRandColor());
 }
 
 GameMap::~GameMap() {
@@ -36,7 +37,7 @@ void GameMap::draw_background(){
 
 void GameMap::draw_food(){
 	if (this->checkFoodErro() == false) {
-		this->setChunkColor(this->food->getPosition(), this->food->getSideColor(), CYAN);
+		this->setChunkColor(this->food->getPosition(), this->food->getSideColor(), this->food->getFillColor());
 	}
 }
 
@@ -81,6 +82,10 @@ void GameMap::setFoodPos(Vector2 _position){
 	}
 }
 
+void GameMap::setFoodColor(COLORREF _color){
+	this->food->setFillColor(_color);
+}
+
 void GameMap::setFoodRenew(bool is){
 	this->renewfood = is;
 }
@@ -91,6 +96,20 @@ Vector2 GameMap::getFoodPos() {
 		return this->food->getPosition();
 	}
 	return Vector2(-1, -1);
+}
+
+COLORREF GameMap::getFoodColor(){
+	return this->food->getFillColor();
+}
+
+
+COLORREF GameMap::getRandColor(){
+	float speed = 10;
+	double color_bottom[3]{};
+	color_bottom[0] = sin(speed / 1500 * clock()) * 0.5 + 0.5;
+	color_bottom[1] = sin(speed / 1500 * clock() + 2 * 3.14f / 3) * 0.5 + 0.5;
+	color_bottom[2] = sin(speed / 1500 * clock() + 4 * 3.14f / 3) * 0.5 + 0.5;
+	return RGB(color_bottom[0] * 255, color_bottom[1] * 255, color_bottom[2] * 255);
 }
 
 bool GameMap::getFoodRenew(){

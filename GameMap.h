@@ -32,9 +32,12 @@ public:
 	void setChunkColor(Vector2 target_pos, COLORREF _color_side, COLORREF _color_fill);
 
 	void setFoodPos(Vector2 _position);
+	void setFoodColor(COLORREF _color);
 	void setFoodRenew(bool is);
 
 	Vector2 getFoodPos();
+	COLORREF getFoodColor();
+	COLORREF getRandColor();
 	bool getFoodRenew();
 
 	bool checkFoodErro();

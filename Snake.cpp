@@ -61,7 +61,7 @@ unsigned int Snake::getDirection() const {
 	return this->direction;
 }
 
-unsigned int Snake::getDeah() const{
+unsigned int Snake::getDeath() const{
 	return this->death;
 }
 
@@ -183,7 +183,7 @@ void Snake::controllerMove(unsigned short _direction) {
 		bool isFoodChunk = (this->controllMap->getFoodPos() == this->getHeadPos());
 		if (isFoodChunk) {
 
-			Chunk chunk(moveLocation, this->controllMap->getChunkSize(), RED);
+			Chunk chunk(moveLocation, this->controllMap->getChunkSize(), this->controllMap->getFoodColor());
 			this->addChunk(chunk, false);
 			this->controllMap->setFoodRenew(true);
 

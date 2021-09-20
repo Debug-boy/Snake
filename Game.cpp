@@ -1,5 +1,4 @@
 #include "Game.h"
-#include <thread>
 
 #define GAME_SIZE 800
 #define CHUNK_SIZE 20
@@ -27,6 +26,7 @@ void Game::begin(){
 
 		if (gameMap.getFoodRenew()) {
 			gameMap.setFoodPos(snake.getRandPos());
+			gameMap.setFoodColor(gameMap.getRandColor());
 		}
 		gameMap.draw();
 		snake.draw();
@@ -37,11 +37,11 @@ void Game::begin(){
 		}
 
 	}
-	Game::end();
 }
 
 void Game::end(){
 	gameSatet = State::end;
+	MessageBoxA(GetHWnd(), "exit!", "Game Happy!", MB_OK);
 	closegraph();
 }
 
@@ -70,7 +70,7 @@ void minorkeyboard(void*){
 			snake.autoMove();
 		}
 
-		if (snake.getDeah()){
+		if (snake.getDeath()){
 			break;
 		}
 

@@ -1,7 +1,6 @@
 #pragma once
 #include <iostream>
 #include <vector>
-#include <conio.h>
 #include "GameMap.h"
 
 enum Direction { left = 1, right, up, down };
@@ -32,7 +31,7 @@ public:
 	Chunk &getHeadChunk();
 	unsigned int getColor() const;
 	unsigned int getDirection() const;
-	unsigned int getDeah() const;
+	unsigned int getDeath() const;
 	Vector2 getHeadPos() const;
 	Vector2 getRandPos() const;
 
