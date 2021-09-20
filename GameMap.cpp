@@ -109,8 +109,6 @@ bool GameMap::checkOutSide(Vector2 checkLocation){
 			return false;
 		}
 	}
-	MessageBoxA(GetHWnd(), "OutSide!", "GameOver", MB_OK);
-	exit(1);
 	return true;
 }
 

@@ -4,6 +4,7 @@ Snake::Snake(unsigned int _color){
 	this->color_node = _color;
 	this->color_head = WHITE;
 	this->direction = Direction::right;
+	this->death = false;
 }
 
 void Snake::setControlMap(GameMap* gameMap){
@@ -44,6 +45,10 @@ void Snake::setHeadColor(unsigned int _color) {
 	this->color_head = _color;
 }
 
+void Snake::setDeath(bool _death){
+	this->death = _death;
+}
+
 Chunk &Snake::getHeadChunk(){
 	return (*this->list.begin());
 }
@@ -56,14 +61,18 @@ unsigned int Snake::getDirection() const {
 	return this->direction;
 }
 
+unsigned int Snake::getDeah() const{
+	return this->death;
+}
+
 Vector2 Snake::getHeadPos() const{
-	if (!this->list .size()) {
+	if (!this->list.size()) {
 		return Vector2(0, 0);
 	}
 	return (*this->list.cbegin()).getPosition();
 }
 
-Vector2 Snake::getRandPos(){
+Vector2 Snake::getRandPos() const{
 	Vector2 location = this->controllMap->getRandPos();
 	
 	//判断从GameMap类里面的取出的随机Chunk坐标是否为蛇身体的节点，
@@ -76,7 +85,7 @@ Vector2 Snake::getRandPos(){
 }
 
 
-bool Snake::checkPosIsNode(Vector2 _position){
+code_t Snake::checkPosIsNode(Vector2 _position) const{
 	for (auto iter_chunk = this->list.begin(); iter_chunk != this->list.end(); iter_chunk++) {
 		if ((*iter_chunk).getPosition() == _position) {
 			return true;
@@ -86,12 +95,12 @@ bool Snake::checkPosIsNode(Vector2 _position){
 }
 
 
-bool Snake::checkNextMoveErro(Vector2 &outNextLocation){
+code_t Snake::checkNextMoveErro(Vector2 &outNextLocation){
 
 	Vector2 headLocation = this->getHeadPos();
 	Vector2 targetLocation;
 
-	switch (this->direction)
+	switch (this->getDirection())
 	{
 	case Direction::up:
 		targetLocation.set(headLocation.x, headLocation.y - 1);
@@ -113,13 +122,33 @@ bool Snake::checkNextMoveErro(Vector2 &outNextLocation){
 		break;
 	}
 	outNextLocation = targetLocation;
-	return
-		this->controllMap->checkOutSide(targetLocation) &&
-		this->checkPosIsNode(targetLocation);
+
+	if (this->controllMap->checkOutSide(targetLocation))
+		return MoveCode::error;
+
+	if (this->checkPosIsNode(targetLocation))
+		return MoveCode::owning;
+
+	return MoveCode::normal;
 }
 
-bool Snake::checkMapErro(){
+code_t Snake::checkMapErro(){
 	return !this->controllMap;
+}
+
+code_t Snake::checkHeadBump(){
+
+	if (this->list.size() < 1) {
+		return false;
+	}
+
+	for (unsigned int i = 1; i < this->list.size(); i++) {
+		if (this->getHeadPos() == this->list[i].getPosition()) {
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void Snake::updata(Vector2 nextPos) {
@@ -131,12 +160,6 @@ void Snake::updata(Vector2 nextPos) {
 		return;
 	}
 
-	//这个方法执行之后，后一个节点数据就等于了前面的节点数据
-	//那么在头部节点的后面一个节点也会==当前头部节点的数据
-	//所以这个方法是要和move方法配套使用的
-	//move方法会将头部节点更新到玩家控制的按钮方向节点
-	//然后通过draw再将蛇渲染出来
-	//0=头部 1=0,2=1,3=2,4=3,5=4,6=5
 	for (unsigned int next = local_size - 1; next > 0; next--) {
 
 		auto pre = next - 1;
@@ -148,12 +171,15 @@ void Snake::updata(Vector2 nextPos) {
 
 void Snake::controllerMove(unsigned short _direction) {
 
+	auto curDirection = this->getDirection();//在修改朝向之前先记录当前的朝向，用于处理反方向异常
+
 	this->setDirection(_direction);
 
 	Vector2 moveLocation;//下次移动的坐标会从输出到这个Vec2变量里面
 
-	if (this->checkNextMoveErro(moveLocation) == false) {
+	auto checkCode = this->checkNextMoveErro(moveLocation);
 
+	if (checkCode == MoveCode::normal) {
 		bool isFoodChunk = (this->controllMap->getFoodPos() == this->getHeadPos());
 		if (isFoodChunk) {
 
@@ -162,11 +188,29 @@ void Snake::controllerMove(unsigned short _direction) {
 			this->controllMap->setFoodRenew(true);
 
 			//如果食物在边界的那种，那么获取下次的坐标一定出界了，那么我要把下次坐标设置为头部坐标
-			if (this->checkNextMoveErro(moveLocation)) {
+			//不然的话无解死亡
+			if (this->checkNextMoveErro(moveLocation) == MoveCode::error) {
 				moveLocation = this->getHeadPos();
 			}
 		}
-		this->updata(moveLocation);
+
+	}else if (checkCode == MoveCode::owning) {
+		this->setDirection(curDirection);
+		this->checkNextMoveErro(moveLocation);
+	}
+	//若蛇出界
+	else if (checkCode == MoveCode::error) {
+		this->setDeath(true);//设置死亡
+		MessageBoxA(GetHWnd(), "OutSide!", "GameOver", MB_OK);
+	}
+	
+	//更新节点数据
+	this->updata(moveLocation);
+
+	//若头部与身体有碰撞
+	if (this->checkHeadBump()) {
+		this->setDeath(true);//设置死亡
+		MessageBoxA(GetHWnd(), "Bump!", "GameOver", MB_OK);
 	}
 
 }

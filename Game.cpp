@@ -70,12 +70,17 @@ void minorkeyboard(void*){
 			snake.autoMove();
 		}
 
+		if (snake.getDeah()){
+			break;
+		}
+
 		if (GetAsyncKeyState(VK_ESCAPE)) {
 			break;
 		}
 
 		SleepEx(100, false);
 	}
+
 	gameSatet = State::end;
 	return;
 }
