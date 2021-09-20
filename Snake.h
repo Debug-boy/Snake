@@ -1,6 +1,8 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include <thread>
+#include <mutex>
 #include "GameMap.h"
 
 enum Direction { left = 1, right, up, down };

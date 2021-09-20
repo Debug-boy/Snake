@@ -3,6 +3,8 @@
 #define GAME_SIZE 800
 #define CHUNK_SIZE 20
 
+std::mutex mu;
+
 void minorkeyboard(void*);
 GameMap gameMap(WHITE, DARKGRAY, GAME_SIZE, CHUNK_SIZE);
 Snake snake(RED);
@@ -29,7 +31,11 @@ void Game::begin(){
 			gameMap.setFoodColor(gameMap.getRandColor());
 		}
 		gameMap.draw();
+
+		mu.lock();
 		snake.draw();
+		mu.unlock();
+
 		FlushBatchDraw();
 
 		if (gameSatet == State::end) {

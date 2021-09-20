@@ -1,5 +1,6 @@
 #include "Snake.h"
 
+
 Snake::Snake(unsigned int _color){
 	this->color_node = _color;
 	this->color_head = WHITE;
@@ -242,7 +243,7 @@ void Snake::draw(){
 		return;
 	}
 
-	for (auto iter_chunk = this->list.cbegin(); iter_chunk != this->list.cend(); iter_chunk++) {
+	for (auto iter_chunk = this->list.begin(); iter_chunk != this->list.end(); iter_chunk++) {
 		
 		auto &chunk = (*iter_chunk);
 		this->controllMap->setChunkColor(chunk.getPosition(), chunk.getSideColor(), chunk.getFillColor());
